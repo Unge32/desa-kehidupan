@@ -17,6 +17,14 @@ dan laut, pelihara ayam, kambing, sapi dan kerbau, jaga lapar/haus/energi,
 berteman dengan 8 warga desa, pacaran, menikah, punya anak yang tumbuh,
 sekolah, dan bermain di taman.
 
+Semua transaksi di game memakai Gold — duit mainan di dalam game saja,
+tanpa pembayaran uang asli. Duit didapat dari jual sayur, telur/susu
+ternak, hasil mancing, dan tugas bantu warga yang dibayar (bicara ke
+Pak Tani, Budi, Bu Sari, atau Rani). Modal awal: benih sayur + Stroberi
+gratis, 8 petak ladang (4 sudah dicangkul), Penyiram Tanaman, Ember Perah,
+dan sedikit pakan. Musim Semi (minggu pertama) didominasi hujan, jadi
+tanaman tersiram sendiri dan pemain bisa fokus cari duit dulu.
+
 ## How to play
 
 Serve the `game/` folder with any static server (for example
@@ -29,7 +37,7 @@ art and sound are procedural.
   beri makan hewan, minum, tidur (di depan rumah).
 - **F:** memancing di tepi air (tarik saat muncul "❗").
 - **G:** beri hadiah ke warga terdekat. **R:** lamar (hati penuh + cincin).
-- **1–5:** pilih benih. **B:** toko/pasar. **I:** tas (pakai/makan/jual).
+- **1–6:** pilih benih. **B:** toko/pasar. **I:** tas (pakai/makan/jual).
 - **P:** jeda. **H:** bantuan. **M:** suara. **Enter:** mulai / ulang.
 - **Goal:** beli Rumah Besar sebelum hari ke-28 habis. Kehabisan waktu =
   game over. Sehat 0 = pingsan (kehilangan 10% emas, lanjut hari berikut).
