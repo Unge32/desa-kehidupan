@@ -1,7 +1,9 @@
 // Desa Kehidupan — npc.js
 // Penduduk desa: mengobrol (hati persahabatan), memberi hadiah, pacaran,
 // melamar, menikah, dan punya anak yang tumbuh lalu sekolah dan bermain.
+// Bicara juga menerima / menyelesaikan tugas bantu warga yang dibayar Gold.
 import { NPCS } from './config.js';
+import { taskForNpc, taskStatus, acceptTask, taskProgress, completeTask } from './tasks.js';
 
 export function npcAt(world, tx, ty) {
   return world.npcs.find((n) => Math.floor(n.x / 32) === tx && Math.floor(n.y / 32) === ty) || null;
@@ -19,13 +21,28 @@ export function nearestNpc(world, px, py, maxDist = 48) {
 
 export function talkTo(world, npc) {
   const p = world.player;
+  let msg = '';
+  // Tugas warga: bicara pertama menerima tugas, bicara lagi setelah syarat
+  // terpenuhi menyelesaikan tugas dan membayar Gold.
+  const def = taskForNpc(world, npc.id);
+  if (def) {
+    const st = taskStatus(world, def.id);
+    if (st === 'none') {
+      acceptTask(world, def);
+      msg = ` 📋 TUGAS: ${def.title} — ${def.offer} (Hadiah ${def.reward}G)`;
+    } else if (st === 'active') {
+      const prog = taskProgress(world, def);
+      if (prog.ready) msg = ` 📋 ${completeTask(world, def)}`;
+      else msg = ` 📋 TUGAS: ${def.title} — ${prog.text}`;
+    }
+  }
   if (npc.talkedToday) {
-    return { ok: true, msg: `${npc.name}: "${npc.lines[Math.floor(world.rng() * npc.lines.length)]}"`, sfx: 'talk' };
+    return { ok: true, msg: `${npc.name}: "${npc.lines[Math.floor(world.rng() * npc.lines.length)]}"${msg}`, sfx: 'talk' };
   }
   npc.talkedToday = true;
   npc.hearts = Math.min(5, npc.hearts + 1);
   world.stats.talked += 1;
-  let msg = `${npc.name}: "${npc.lines[Math.floor(world.rng() * npc.lines.length)]}"`;
+  msg = `${npc.name}: "${npc.lines[Math.floor(world.rng() * npc.lines.length)]}"${msg}`;
   if (npc.hearts === 5 && npc.datable && !p.married) {
     msg += ' ❤ Hati Rani PENUH! Lamar dia dengan Cincin Lamaran.';
   }
@@ -99,7 +116,7 @@ export function festivalBonus(world) {
     return { ok: true, sfx: 'festival', msg: 'Lomba Mancing! Kamu menang! Hadiah 1.000G!' };
   }
   if (season === 2) {
-    world.inventory.benih_labbu = (world.inventory.benih_labbu || 0) + 3;
+    world.inventory.benih_labu = (world.inventory.benih_labu || 0) + 3;
     return { ok: true, sfx: 'festival', msg: 'Festival Panen! Kamu dapat 3 Benih Labu. Harga panen hari ini 2x!' };
   }
   world.inventory.bunga = (world.inventory.bunga || 0) + 2;

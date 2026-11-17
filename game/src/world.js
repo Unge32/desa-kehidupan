@@ -94,14 +94,15 @@ export function createWorld(seed = 1) {
     }
   }
 
-  // Petak ladang (12 petak awal) di depan rumah pemain.
+  // Petak ladang awal (8 petak, tidak terlalu besar) di depan rumah pemain.
+  // Baris pertama sudah dicangkul — modal awal petani baru.
   const plots = [];
   for (let y = 0; y < 2; y += 1) {
-    for (let x = 0; x < 6; x += 1) {
+    for (let x = 0; x < 4; x += 1) {
       const px = 6 + x;
       const py = 6 + y;
       terrain[py][px] = T.SOIL;
-      plots.push({ x: px, y: py, state: 'untilled', crop: null, growth: 0, watered: false });
+      plots.push({ x: px, y: py, state: y === 0 ? 'tilled' : 'untilled', crop: null, growth: 0, watered: false });
     }
   }
 
@@ -177,6 +178,7 @@ export function createWorld(seed = 1) {
       married: false, spouse: null, childStage: 0, childBornDay: 0, childName: '',
     },
     animals: [],
+    tasks: {},
     fish: { active: false, phase: 'idle', timer: 0, caught: null, pro: false },
     flags: { landBought: false, bigHouse: false, pancingPro: false, cangkulBaja: false, festivalDoneToday: false },
     stats: { harvested: 0, fishCaught: 0, gemsFound: 0, earned: 0, gifted: 0, talked: 0 },
@@ -199,6 +201,12 @@ export function festivalOf(day) {
 
 export function rollWeather(world) {
   const r = world.rng();
+  // Musim Semi (hari 1-7) didominasi hujan: tanaman tersiram otomatis dan
+  // pemain baru bisa fokus cari duit dulu. Tidak ada Badai di musim Semi.
+  if (seasonOf(world.day) === 0) {
+    world.weather = r < 0.75 ? 'Hujan' : r < 0.88 ? 'Berawan' : 'Cerah';
+    return;
+  }
   world.weather = r < 0.62 ? 'Cerah' : r < 0.82 ? 'Hujan' : r < 0.93 ? 'Berawan' : 'Badai';
   if (world.weather === 'Badai' && seasonOf(world.day) === 3) world.weather = 'Cerah';
 }

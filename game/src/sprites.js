@@ -346,7 +346,7 @@ export function buildSprites() {
   };
   s.crop = {};
   for (const [id, c] of Object.entries({
-    lobak: '#ff5a4e', wortel: '#ff8c1a', tomat: '#e63946', gandum: '#e9c46a', labu: '#f4842b',
+    lobak: '#ff5a4e', wortel: '#ff8c1a', tomat: '#e63946', gandum: '#e9c46a', labu: '#f4842b', stroberi: '#ff4d6d',
   })) s.crop[id] = [0, 1, 2].map((st) => cropSprite(c, st));
   s.item = {
     benih: itemSprite('benih'), telur: itemSprite('telur'), susu: itemSprite('susu'),

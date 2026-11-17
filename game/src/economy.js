@@ -11,6 +11,8 @@ export function itemName(id) {
   if (id.startsWith('permata_')) return GEMS[id.slice(8)].name;
   if (id === 'telur') return 'Telur';
   if (id === 'susu') return 'Susu';
+  if (id === 'penyiram') return 'Penyiram Tanaman';
+  if (id === 'ember_perah') return 'Ember Perah';
   for (const cat of Object.values(SHOP)) {
     const found = cat.find((i) => i.id === id);
     if (found) return found.name;

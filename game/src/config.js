@@ -26,6 +26,7 @@ export const CROPS = {
   tomat: { name: 'Tomat', seed: 60, sell: 260, days: 4, seasons: [1, 2], color: '#e63946', leaf: '#2b8a3e' },
   gandum: { name: 'Gandum', seed: 45, sell: 200, days: 3, seasons: [0, 1, 2, 3], color: '#e9c46a', leaf: '#c9a227' },
   labu: { name: 'Labu', seed: 90, sell: 420, days: 5, seasons: [2, 3], color: '#f4842b', leaf: '#3d8b40' },
+  stroberi: { name: 'Stroberi', seed: 40, sell: 170, days: 3, seasons: [0, 1], color: '#ff4d6d', leaf: '#2f9e44' },
 };
 
 export const FISH = {
@@ -57,7 +58,8 @@ export const SHOP = {
     { id: 'benih_wortel', name: 'Benih Wortel', price: 35, desc: 'Panen 3 hari, Semi-Panas-Gugur' },
     { id: 'benih_tomat', name: 'Benih Tomat', price: 60, desc: 'Panen 4 hari, Panas-Gugur' },
     { id: 'benih_gandum', name: 'Benih Gandum', price: 45, desc: 'Panen 3 hari, semua musim' },
-    { id: 'benih_labbu', name: 'Benih Labu', price: 90, desc: 'Panen 5 hari, Gugur-Dingin' },
+    { id: 'benih_labu', name: 'Benih Labu', price: 90, desc: 'Panen 5 hari, Gugur-Dingin' },
+    { id: 'benih_stroberi', name: 'Benih Stroberi', price: 40, desc: 'Buah manis, panen 3 hari, Semi-Panas' },
   ],
   makanan: [
     { id: 'roti', name: 'Roti', price: 30, desc: 'Lapar +35' },
@@ -110,4 +112,9 @@ export const FESTIVALS = [
 ];
 
 export const START_GOLD = 500;
-export const START_ITEMS = { benih_lobak: 3, roti: 2, air: 2, pakan_ayam: 2 };
+// Modal awal: benih sayur + buah gratis, makanan, pakan, penyiram tanaman,
+// dan ember perah. Semua transaksi di game pakai Gold (duit mainan) saja.
+export const START_ITEMS = {
+  benih_lobak: 5, benih_wortel: 3, benih_stroberi: 3, benih_gandum: 2,
+  roti: 2, air: 2, pakan_ayam: 3, rumput: 3, penyiram: 1, ember_perah: 1,
+};

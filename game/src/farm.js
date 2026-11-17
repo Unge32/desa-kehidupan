@@ -36,6 +36,7 @@ export function farmAction(world, plot, seedId) {
   }
   if (plot.crop && plot.growth < CROPS[plot.crop].days) {
     if (plot.watered) return { ok: false, msg: 'Sudah disiram hari ini.' };
+    if ((world.inventory.penyiram || 0) <= 0) return { ok: false, msg: 'Kamu butuh Penyiram Tanaman untuk menyiram!' };
     plot.watered = true;
     plot.state = 'wet';
     p.energy = Math.max(0, p.energy - 1);

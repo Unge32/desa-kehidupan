@@ -4,8 +4,9 @@
 import { TILE, VIEW_W, VIEW_H, SEASON_NAMES, CROPS, FESTIVALS, SHOP } from './config.js';
 import { seasonOf, festivalOf, scoreOf } from './world.js';
 import { itemName, sellableItems, sellItem, sellAll, buyItem } from './economy.js';
+import { activeTasks } from './tasks.js';
 
-const SEED_KEYS = ['lobak', 'wortel', 'tomat', 'gandum', 'labu'];
+const SEED_KEYS = ['lobak', 'wortel', 'tomat', 'gandum', 'labu', 'stroberi'];
 
 export function createUI() {
   return {
@@ -83,7 +84,7 @@ export function drawHUD(ctx, world, ui) {
   ctx.fillRect(0, 52, 300, 26);
   ctx.fillStyle = '#fff';
   ctx.font = '13px monospace';
-  ctx.fillText(`Benih: ${crop.name} (${world.inventory[`benih_${seed}`] || 0})  [1-5 ganti]`, 14, 70);
+  ctx.fillText(`Benih: ${crop.name} (${world.inventory[`benih_${seed}`] || 0})  [1-6 ganti]`, 14, 70);
   if (p.married) {
     ctx.fillStyle = '#ff70a6';
     ctx.font = 'bold 13px monospace';
@@ -373,9 +374,18 @@ export function drawPause(ctx, world) {
   ctx.fillText(`Hari ${world.day}/28 — ${SEASON_NAMES[seasonOf(world.day)]} — ${world.weather}`, VIEW_W / 2, 250);
   ctx.fillText(`Emas ${world.gold.toLocaleString('id-ID')}G • Skor ${scoreOf(world).toLocaleString('id-ID')}`, VIEW_W / 2, 285);
   ctx.fillText('P / Esc lanjut • H bantuan • Enter mulai ulang dari awal', VIEW_W / 2, 330);
+  const tasks = activeTasks(world);
+  if (tasks.length > 0) {
+    ctx.fillStyle = '#ffd60a';
+    ctx.font = 'bold 17px monospace';
+    ctx.fillText('📋 TUGAS AKTIF:', VIEW_W / 2, 380);
+    ctx.fillStyle = '#fff';
+    ctx.font = '16px monospace';
+    tasks.forEach((t, i) => ctx.fillText(t.text, VIEW_W / 2, 408 + i * 26));
+  }
 }
 
-export function drawHelp(ctx) {
+export function drawHelp(ctx, world) {
   ctx.fillStyle = 'rgba(0,0,0,0.75)';
   ctx.fillRect(0, 0, VIEW_W, VIEW_H);
   ctx.fillStyle = '#fff8e7';
@@ -390,13 +400,20 @@ export function drawHelp(ctx) {
   ctx.font = '15px monospace';
   const lines = [
     'TUJUAN: Beli RUMAH BESAR (50.000G) sebelum akhir Tahun 1 (28 hari).',
+    'Semua transaksi pakai Gold — duit mainan di dalam game.',
     '',
     '🌱 BERTANI: tekan E di petak ladang untuk cangkul → tanam benih',
-    '   (pilih benih 1-5) → siram tiap hari → panen saat matang.',
+    '   (pilih benih 1-6) → siram tiap hari → panen saat matang.',
+    '   Modal awal: benih sayur + Stroberi gratis, 8 petak ladang,',
+    '   Penyiram Tanaman, Ember Perah, dan sedikit pakan.',
+    '🌧️ MUSIM SEMI HUJAN: minggu pertama sering hujan, tanamanmu',
+    '   tersiram sendiri. Fokus cari duit: panen, mancing, gali, ternak.',
     '🎣 MANCING: berdiri di tepi air, tekan F, tarik saat muncul "!"',
     '⛏️ MENAMBANG: tekan E di titik ✦ di hutan. Berlian = 2.000G!',
     '🐄 TERNAK: beli hewan di pasar, beri pakan, ambil telur/susu.',
-    '   Hewan sakit? Beri Obat Hewan.',
+    '   Perah susu pakai Ember Perah. Hewan sakit? Beri Obat Hewan.',
+    '📋 TUGAS WARGA: bicara (E) ke Pak Tani, Budi, Bu Sari, atau Rani',
+    '   untuk tugas berbayar Gold. Selesai? Bicara lagi untuk upah!',
     '🛒 PASAR: tekan B di dekat toko / pasar. Jual hasil panen di tas (I).',
     '💬 WARGA: tekan E dekat warga untuk mengobrol (+hati). Beri bunga',
     '   untuk Rani. Hati penuh + cincin = menikah, lalu punya anak!',
@@ -408,9 +425,9 @@ export function drawHelp(ctx) {
     '🌦️ CUACA: hujan menyiram tanamanmu. Musim dingin tanaman lambat.',
     '',
     'Kontrol: WASD/Arrows jalan • E aksi • F mancing • I tas • B toko',
-    '1-5 pilih benih • P jeda • M suara • H bantuan • Enter mulai/ulang',
+    '1-6 pilih benih • P jeda • M suara • H bantuan • Enter mulai/ulang',
   ];
-  lines.forEach((l, i) => ctx.fillText(l, 210, 140 + i * 22));
+  lines.forEach((l, i) => ctx.fillText(l, 210, 140 + i * 18));
   ctx.fillStyle = '#888';
   ctx.font = '14px monospace';
   ctx.fillText('H / Esc / klik untuk menutup', 210, 640);

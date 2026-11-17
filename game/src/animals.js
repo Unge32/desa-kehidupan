@@ -33,6 +33,9 @@ export function collectAnimal(world, animal) {
     if (animal.sick) return { ok: false, msg: `${def.name} sedang sakit. Beri Obat Hewan.` };
     return { ok: false, msg: animal.fed ? 'Hasilnya baru ada besok pagi.' : `${def.name} belum diberi pakan hari ini.` };
   }
+  if (def.product !== 'Telur' && (world.inventory.ember_perah || 0) <= 0) {
+    return { ok: false, msg: 'Kamu butuh Ember Perah untuk memerah susu.' };
+  }
   const key = def.product === 'Telur' ? 'telur' : 'susu';
   world.inventory[key] = (world.inventory[key] || 0) + 1;
   animal.produceReady = false;

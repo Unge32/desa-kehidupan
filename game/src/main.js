@@ -64,6 +64,7 @@ function resetGame(seed = 1) {
   ui.dialogQueue = [];
   ui.shopSel = 0;
   ui.invSel = 0;
+  ui.seedSel = 0;
   setState('playing');
 }
 
@@ -111,7 +112,7 @@ function doInteract() {
   // 5. Petak ladang.
   const plot = plotAt(world, tx, ty);
   if (plot) {
-    const seedId = ['lobak', 'wortel', 'tomat', 'gandum', 'labu'][ui.seedSel];
+    const seedId = ['lobak', 'wortel', 'tomat', 'gandum', 'labu', 'stroberi'][ui.seedSel];
     const r = farmAction(world, plot, seedId);
     say(r.msg, r.sfx || (r.ok ? 'plant' : 'error'));
     return;
@@ -187,6 +188,14 @@ function useSelectedItem() {
     say('Buket Bunga: beri ke warga dengan tombol G saat berdiri di dekatnya.', null);
     return;
   }
+  if (id === 'penyiram') {
+    say('Penyiram Tanaman: dipakai otomatis saat menyiram (tekan E di tanaman).', null);
+    return;
+  }
+  if (id === 'ember_perah') {
+    say('Ember Perah: dipakai otomatis saat memerah susu sapi/kambing/kerbau.', null);
+    return;
+  }
   if (sellableItems(world).some((s) => s.id === id)) {
     const r = sellItem(world, id, 1);
     say(r.msg, r.sfx);
@@ -231,14 +240,14 @@ function handlePlayingKeys() {
   if (input.wasPressed('p', 'P', 'Escape')) setState('pause');
   if (input.wasPressed('h', 'H')) setState('help');
   if (input.wasPressed('m', 'M')) { audio.muted = !audio.muted; say(audio.muted ? 'Suara dimatikan.' : 'Suara dinyalakan.', null); }
-  for (let i = 0; i < 5; i += 1) {
+  for (let i = 0; i < 6; i += 1) {
     if (input.wasPressed(String(i + 1))) ui.seedSel = i;
   }
 }
 
 function handleShopKeys() {
   const tabs = ['benih', 'makanan', 'hewan', 'obat', 'rumah', 'lain'];
-  const items = { benih: 5, makanan: 4, hewan: 6, obat: 3, rumah: 3, lain: 3 }[ui.shopTab];
+  const items = { benih: 6, makanan: 4, hewan: 6, obat: 3, rumah: 3, lain: 3 }[ui.shopTab];
   if (input.wasPressed('ArrowLeft', 'a')) {
     const i = (tabs.indexOf(ui.shopTab) + tabs.length - 1) % tabs.length;
     ui.shopTab = tabs[i]; ui.shopSel = 0;
@@ -250,7 +259,7 @@ function handleShopKeys() {
   if (input.wasPressed('ArrowUp', 'w')) ui.shopSel = Math.max(0, ui.shopSel - 1);
   if (input.wasPressed('ArrowDown', 's')) ui.shopSel = Math.min(items - 1, ui.shopSel + 1);
   if (input.wasPressed('Enter', ' ')) {
-    const list = { benih: ['benih_lobak', 'benih_wortel', 'benih_tomat', 'benih_gandum', 'benih_labbu'], makanan: ['roti', 'nasi', 'jus', 'air'], hewan: ['beli_ayam', 'beli_kambing', 'beli_sapi', 'beli_kerbau', 'pakan_ayam', 'rumput'], obat: ['obat_hewan', 'obat_diri', 'vitamin'], rumah: ['tanah', 'cincin', 'rumah_besar'], lain: ['bunga', 'pancing_baru', 'cangkul_baja'] }[ui.shopTab];
+    const list = { benih: ['benih_lobak', 'benih_wortel', 'benih_tomat', 'benih_gandum', 'benih_labu', 'benih_stroberi'], makanan: ['roti', 'nasi', 'jus', 'air'], hewan: ['beli_ayam', 'beli_kambing', 'beli_sapi', 'beli_kerbau', 'pakan_ayam', 'rumput'], obat: ['obat_hewan', 'obat_diri', 'vitamin'], rumah: ['tanah', 'cincin', 'rumah_besar'], lain: ['bunga', 'pancing_baru', 'cangkul_baja'] }[ui.shopTab];
     const r = buyItem(world, list[ui.shopSel]);
     say(r.msg, r.sfx || (r.ok ? 'buy' : 'error'));
     const res = gameResult(world);
@@ -385,7 +394,7 @@ function frame(ts) {
     else if (state === 'shop') drawShop(ctx, world, ui);
     else if (state === 'inventory') drawInventory(ctx, world, ui);
     else if (state === 'pause') drawPause(ctx, world);
-    else if (state === 'help') drawHelp(ctx);
+    else if (state === 'help') drawHelp(ctx, world);
     else if (state === 'win') drawWin(ctx, world);
     else if (state === 'lose') drawLose(ctx, world);
   }
